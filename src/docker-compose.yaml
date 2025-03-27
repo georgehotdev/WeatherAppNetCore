@@ -1,0 +1,22 @@
+﻿services:
+  weatherappnetcore.api:
+    image: weathernetappcore-api
+    build:
+      context: .
+      dockerfile: WeatherAppNetCore/Dockerfile
+    ports:
+      - "5000:5080"
+      - "5001:5001"
+  
+  weatherappnetcore.db:
+    image: postgres:latest
+    container_name: weatherappnetcore.db
+    environment:
+      - POSTGRES_DB=weatherapp
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./containers/weatherappnetcore-db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    
