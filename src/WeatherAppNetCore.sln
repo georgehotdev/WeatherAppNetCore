@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherAppNetCore.QueryStac
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherAppNetCore.CommandStack", "CommandStack\WeatherAppNetCore.CommandStack\WeatherAppNetCore.CommandStack.csproj", "{44764EE2-7E82-4363-9D82-C51E7AB2917C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherAppNetCore.Application", "Application\WeatherAppNetCore.Application\WeatherAppNetCore.Application.csproj", "{C695BEBC-F6CE-4ECD-9D75-C62FA2BF3F93}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,5 +56,9 @@ Global
 		{44764EE2-7E82-4363-9D82-C51E7AB2917C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{44764EE2-7E82-4363-9D82-C51E7AB2917C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{44764EE2-7E82-4363-9D82-C51E7AB2917C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C695BEBC-F6CE-4ECD-9D75-C62FA2BF3F93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C695BEBC-F6CE-4ECD-9D75-C62FA2BF3F93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C695BEBC-F6CE-4ECD-9D75-C62FA2BF3F93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C695BEBC-F6CE-4ECD-9D75-C62FA2BF3F93}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

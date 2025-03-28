@@ -4,11 +4,13 @@ services:
   weatherappnetcore.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=5000
-      - ASPNETCORE_HTTPS_PORTS=5001
+      - ASPNETCORE_HTTP_PORTS=9000
+      - ASPNETCORE_URLS=http://+:9000
+      - DOTNET_GENERATE_CERTIFICATE=false
+
     ports:
-      - "5000:5000"
-      - "5001:5001"
+      - "9000:9000"
+      - "9001:9001"
     volumes:
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
   

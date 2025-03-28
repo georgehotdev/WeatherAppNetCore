@@ -10,18 +10,14 @@ namespace WeatherAppNetCore.Api.BackgroundServices;
 
 public class WeatherFetcherBackgroundService : BackgroundService
 {
-    private readonly IMediator _bus;
     private readonly ILogger<WeatherFetcherBackgroundService> _logger;
+    private readonly IServiceProvider _serviceProvider;
     private readonly WeatherApiConfig _weatherApiConfig;
-    private readonly IWeatherFetcher _weatherFetcher;
 
-    public WeatherFetcherBackgroundService(ILogger<WeatherFetcherBackgroundService> logger,
-        IWeatherFetcher weatherFetcher, IOptions<WeatherApiConfig> weatherApiConfig,
-        IMediator bus)
+    public WeatherFetcherBackgroundService(ILogger<WeatherFetcherBackgroundService> logger, IOptions<WeatherApiConfig> weatherApiConfig, IServiceProvider serviceProvider)
     {
         _logger = logger;
-        _weatherFetcher = weatherFetcher;
-        _bus = bus;
+        _serviceProvider = serviceProvider;
         _weatherApiConfig = weatherApiConfig.Value;
     }
 
@@ -29,26 +25,34 @@ public class WeatherFetcherBackgroundService : BackgroundService
     {
         while (!cancellationToken.IsCancellationRequested)
         {
-            _logger.LogInformation("WeatherFetcherBackgroundService running at: {time}", DateTimeOffset.Now);
-
-            var weatherForecastFetchResult = await FetchWeatherData();
-
-            if (!weatherForecastFetchResult.IsSuccess)
+            using (var scope = _serviceProvider.CreateScope())
             {
-                LogFetchErrors(weatherForecastFetchResult);
+                var weatherFetcher = scope.ServiceProvider.GetRequiredService<IWeatherFetcher>();
+                var bus = scope.ServiceProvider.GetRequiredService<IMediator>();
+                
+                _logger.LogInformation("WeatherFetcherBackgroundService running at: {time}", DateTimeOffset.Now);
+
+                var weatherForecastFetchResult = await FetchWeatherData(weatherFetcher);
+
+                if (!weatherForecastFetchResult.IsSuccess)
+                {
+                    LogFetchErrors(weatherForecastFetchResult);
+                }
+                else
+                {
+                    await StoreWeatherForecasts(bus, weatherForecastFetchResult);
+                }
             }
-            else
-            {
-                await StoreWeatherForecasts(weatherForecastFetchResult);
-            }
+        
+            
             await Task.Delay(TimeSpan.FromSeconds(_weatherApiConfig.IntervalBetweenRequestsInSeconds),
                 cancellationToken);
         }
     }
 
-    private async Task StoreWeatherForecasts(Result<List<WeatherForecast>> weatherForecastFetchResult)
+    private async Task StoreWeatherForecasts(IMediator bus, Result<List<WeatherForecast>> weatherForecastFetchResult)
     {
-        await _bus.Send(new StoreWeatherForecastsCommand(weatherForecastFetchResult.Value));
+        await bus.Send(new StoreWeatherForecastsCommand(weatherForecastFetchResult.Value));
 
         _logger.LogInformation("WeatherFetcherBackgroundService completed at: {time}", DateTimeOffset.Now);
     }
@@ -59,7 +63,7 @@ public class WeatherFetcherBackgroundService : BackgroundService
         _logger.LogError("WeatherFetcherBackgroundService failed to fetch weather data: {error}", errors);
     }
 
-    private async Task<Result<List<WeatherForecast>>> FetchWeatherData()
+    private async Task<Result<List<WeatherForecast>>> FetchWeatherData(IWeatherFetcher weatherFetcher)
     {
         var locations = _weatherApiConfig.Locations;
         var batches = locations.Chunk(_weatherApiConfig.MaxDegreeOfParallelism);
@@ -69,7 +73,7 @@ public class WeatherFetcherBackgroundService : BackgroundService
             var weatherForecasts = new List<WeatherForecast>();
             foreach (var batch in batches)
             {
-                var tasks = batch.Select(location => _weatherFetcher.GetWeatherForecastAsync(location.City)).ToList();
+                var tasks = batch.Select(location => weatherFetcher.GetWeatherForecastAsync(location.City)).ToList();
                 var result = await Task.WhenAll(tasks);
                 var fetchedForecasts = result.Where(x => x.IsSuccess);
                 weatherForecasts.AddRange(fetchedForecasts.Select(x => x.Value!));

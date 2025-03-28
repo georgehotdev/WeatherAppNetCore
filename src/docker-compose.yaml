@@ -1,12 +1,13 @@
 ﻿services:
   weatherappnetcore.api:
-    image: weathernetappcore-api
+    image: ${DOCKER_REGISTRY-}weathernetappcoreapi
+    container_name: weatherappnetcore.api
     build:
       context: .
-      dockerfile: WeatherAppNetCore/Dockerfile
+      dockerfile: Api/Dockerfile
     ports:
-      - "5000:5080"
-      - "5001:5001"
+      - "9000:9000"
+      - "9001:9001"
   
   weatherappnetcore.db:
     image: postgres:latest
