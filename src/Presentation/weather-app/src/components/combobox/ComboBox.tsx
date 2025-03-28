@@ -11,12 +11,18 @@ import { useEffect, useState } from 'react'
 import './ComboBox.css'
 
 type ComboBoxProps = {
+  initSelectedValue: boolean
   values: string[]
   onChange: (value: string) => void
 }
 
-export default function ComboBox({ values, onChange }: ComboBoxProps) {
+export default function ComboBox({
+  initSelectedValue,
+  values,
+  onChange
+}: ComboBoxProps) {
   const [selected, setSelected] = useState<string>(values[0])
+  const [loaded, setLoaded] = useState(false)
 
   const onSelectionChanged = (value: string) => {
     setSelected(value)
@@ -24,8 +30,13 @@ export default function ComboBox({ values, onChange }: ComboBoxProps) {
   }
 
   useEffect(() => {
-    console.log(values)
-  }, [values])
+    if (values?.length && !loaded) {
+      const initialValue = values[0]
+      onSelectionChanged(initialValue)
+      initSelectedValue && setSelected(initialValue)
+      setLoaded(true)
+    }
+  }, [values, initSelectedValue, loaded])
 
   return (
     <div className="mx-auto w-52 pt-6">
