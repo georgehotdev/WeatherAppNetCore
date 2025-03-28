@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WeatherAppNetCore.Persistence;
@@ -11,9 +12,11 @@ using WeatherAppNetCore.Persistence;
 namespace WeatherAppNetCore.Persistence.Migrations
 {
     [DbContext(typeof(WeatherAppDbContext))]
-    partial class WeatherAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250328121018_MadeForecastReferenceIdUnique")]
+    partial class MadeForecastReferenceIdUnique
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

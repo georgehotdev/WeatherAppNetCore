@@ -26,6 +26,7 @@ public static class MigrationExtensions
 
     public static void SeedData(this IApplicationBuilder app)
     {
+        int seedUniqueIdentifier = 1;
         using var scope = app.ApplicationServices.CreateScope();
         using var dbContext = scope.ServiceProvider.GetRequiredService<WeatherAppDbContext>();
         var configuration = scope.ServiceProvider.GetRequiredService<IOptions<WeatherApiConfig>>();
@@ -51,7 +52,7 @@ public static class MigrationExtensions
                             ForecastDate = date.ToUniversalTime(),
                             MaxTemperature = maxTemperature,
                             MinTemperature = minTemperature,
-                            ForecastReferenceId = null
+                            ForecastReferenceId = seedUniqueIdentifier++
                         };
                     });
 

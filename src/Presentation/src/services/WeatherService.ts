@@ -12,11 +12,7 @@ export async function getLocations(): Promise<string[]> {
 
 export async function getWeather(location: string): Promise<WeatherForecast[]> {
   try {
-    const response = await axios.get(`/${location}`, {
-      params: {
-        location
-      }
-    })
+    const response = await axios.get(`/${location}`)
 
     return response.data
   } catch (error) {

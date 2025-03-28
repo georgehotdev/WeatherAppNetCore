@@ -28,18 +28,20 @@ public class GetWeatherForecastsQueryHandler : IRequestHandler<GetWeatherForecas
     public async Task<IEnumerable<WeatherForecast>> Handle(GetWeatherForecastsQuery request,
         CancellationToken cancellationToken)
     {
-        return await _weatherForecastQueryStack.WeatherForecasts
+         var weatherForecasts = await _weatherForecastQueryStack.WeatherForecasts
             .Where(wf => wf.Location == request.Location)
-            .OrderBy(wf => wf.ForecastDate)
             .Select(wf => new WeatherForecast
             {
                 Id = wf.Id,
                 ForecastDate = wf.ForecastDate,
+                ForecastId = wf.ForecastReferenceId,
                 Location = wf.Location,
                 CurrentTemperature = wf.CurrentTemperature,
                 MinTemperature = wf.MinTemperature,
                 MaxTemperature = wf.MaxTemperature,
             })
             .ToListAsync(cancellationToken);
+
+         return weatherForecasts;
     }
 }

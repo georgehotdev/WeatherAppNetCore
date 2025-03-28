@@ -10,4 +10,13 @@ public class WeatherAppDbContext : DbContext
     }
 
     public DbSet<WeatherForecastEntity> WeatherForecasts { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<WeatherForecastEntity>()
+            .HasIndex(x => x.ForecastReferenceId)
+            .IsUnique();
+    }
 }
