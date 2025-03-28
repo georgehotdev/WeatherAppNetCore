@@ -8,6 +8,8 @@
     ports:
       - "9000:9000"
       - "9001:9001"
+    depends_on:
+      - weatherappnetcore.db
   
   weatherappnetcore.db:
     image: postgres:latest
@@ -17,7 +19,18 @@
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     volumes:
-      - ./containers/weatherappnetcore-db:/var/lib/postgresql/data
+      - ./containers/weatherappnetcore.db:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     
+  weatherappnetcore.ui:
+    image: ${DOCKER_REGISTRY-}weathernetappcoreui
+    container_name: weatherappnetcore.ui
+    build:
+      context: ./Presentation
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    depends_on:
+      - weatherappnetcore.api

@@ -75,3 +75,7 @@ playground-temp
 temp
 TODOs.md
 .eslintcache
+
+# App
+appsettings.*.json
+*.DotSettings.user

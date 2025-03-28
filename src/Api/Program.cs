@@ -3,7 +3,7 @@ using WeatherAppNetCore.Api.Configuration;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddInfrastructureDependencies()
-    // .AddBackgroundServices()
+    .AddBackgroundServices()
     .AddExternalServices()
     .AddConfiguration()
     .AddApplicationServices();

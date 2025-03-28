@@ -7,10 +7,15 @@ services:
       - ASPNETCORE_HTTP_PORTS=9000
       - ASPNETCORE_URLS=http://+:9000
       - DOTNET_GENERATE_CERTIFICATE=false
-
+      - ConnectionStrings__Database=Host=weatherappnetcore.db;Port=5432;Database=weatherapp;Username=postgres;Password=postgres;Include Error Detail=true
+      - WeatherApiConfig__ApiKey=<YOUR_OPEN_WEATHER_API_KEY_GOES_HERE>
     ports:
       - "9000:9000"
       - "9001:9001"
     volumes:
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+        
+  weatherappnetcore.ui:
+    environment:
+      - VITE_BACKEND_URL=http://weatherappnetcore.api:9000/api/v1/WeatherForecast
   
